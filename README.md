@@ -22,6 +22,9 @@ look for the overall trend. The default run samples up to 128 tokens.
 
 ## Task
 
+**Write the code yourself, without AI assistance.** You can use AI to learn
+about KV caching, but do not use it to write the implementation.
+
 Edit `model.py` and `sample.py`:
 
 - Process the prompt once, then only the new token at each sampling step.
