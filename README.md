@@ -24,18 +24,10 @@ Edit `model.py` and `sample.py`:
 - Process the prompt once, then only the new token at each sampling step.
 - Implement the cache inside attention. Do not use Hugging Face's built-in cache.
 - Keep logits equivalent to a full forward on the same token history.
+- Handle repeated sampling requests without carrying over state.
 
-Use this interface:
-
-```python
-cache = [None] * len(model.layers)
-logits = model(prompt_ids, cache)
-logits = model(new_token_ids, cache)
-```
-
-Update `cache` in place. Each layer stores a `(K, V)` pair; each tensor has shape
-`[batch, KV heads, tokens, head_dim]`. Support single tokens and multi-token
-chunks. Start each request with a fresh cache.
+Choose the cache representation, tensor layout, and internal API yourself.
+Keep the existing `sample(...)` entry point so the tests can call it.
 
 Scope: one unpadded sequence, float32, inference only.
 
@@ -48,8 +40,8 @@ python -m pytest -q tests -k 'uncached or reproducible'  # Check the starter
 python -m pytest -q tests                             # Grade your implementation
 ```
 
-Cache-specific tests fail until you implement the task. They check logits,
-positions, masking, cache contents, request isolation, and projection input lengths.
+Cache-specific tests fail until you implement the task. They compare predictions
+against a full forward and check how many tokens enter the projections.
 
 ## Reference
 
