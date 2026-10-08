@@ -40,10 +40,18 @@ python -m pytest -q tests -k sampled_tokens  # Check the starter's output
 python -m pytest -q tests                   # Check your implementation
 ```
 
-Tests compare sampled token IDs against hardcoded reference outputs for three
-prompt/seed pairs. They also check that tokens 2–16 each take less time than token
-1, using a 512-token prompt after a warmup. The timing test should fail on the
-starter. Nothing inside the cache is inspected.
+The tests check:
+
+- **Sampled tokens:** Generate 32 tokens at temperature 0.8 for prompt lengths
+  3, 17, and 63, using seeds 7, 19, and 31 respectively. Each output must match
+  the corresponding hardcoded reference token IDs exactly.
+- **Time per token:** Use a 512-token prompt, warm up by sampling two tokens,
+  then sample 16 tokens with timing enabled. Require 16 output tokens and 16
+  timing entries. Every time for tokens 2–16 must be positive and less than
+  token 1's time. Each is compared with token 1.
+
+The starter passes the output checks and should fail the timing check.
+Nothing inside the cache is inspected.
 
 Timing can fluctuate on a busy CPU. Passing these tests checks the given examples,
 not every possible input.
