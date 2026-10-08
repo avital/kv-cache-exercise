@@ -36,15 +36,20 @@ Scope: one unpadded sequence, float32, inference only.
 
 ## Test
 
-Tests use tiny random weights on CPU. No model download.
+Tests use a small model with fixed random weights on CPU. No model download.
 
 ```sh
-python -m pytest -q tests -k 'uncached or reproducible'  # Check the starter
-python -m pytest -q tests                             # Grade your implementation
+python -m pytest -q tests -k sampled_tokens  # Check the starter's output
+python -m pytest -q tests                   # Check your implementation
 ```
 
-Cache-specific tests fail until you implement the task. They compare predictions
-against a full forward and check how many tokens enter the projections.
+Tests compare sampled token IDs against hardcoded reference outputs for three
+prompt/seed pairs. They also check that tokens 2–16 each take less time than token
+1, using a 512-token prompt after a warmup. The timing test should fail on the
+starter. Nothing inside the cache is inspected.
+
+Timing can fluctuate on a busy CPU. Passing these tests checks the given examples,
+not every possible input.
 
 ## Solution
 
