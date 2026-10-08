@@ -31,8 +31,6 @@ Edit `model.py` and `sample.py`:
 Choose the cache representation, tensor layout, and internal API yourself.
 Keep the existing `sample(...)` entry point so the tests can call it.
 
-Scope: one unpadded sequence, float32, inference only.
-
 ## Test
 
 Tests use a small model with fixed random weights on CPU. No model download.
