@@ -46,12 +46,4 @@ python -m pytest -q tests                             # Grade your implementatio
 Cache-specific tests fail until you implement the task. They compare predictions
 against a full forward and check how many tokens enter the projections.
 
-## Reference
-
-[Solution](instructor/model.py), [sampling loop](instructor/sample.py),
-[diff](instructor/add_kv_cache.diff).
-
-```sh
-CANDIDATE_DIR=instructor python -m pytest -q tests
-python instructor/sample.py
-```
+Solution: [diff](instructor/add_kv_cache.diff)
