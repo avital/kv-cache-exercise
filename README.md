@@ -16,7 +16,8 @@ python main.py
 ```
 
 The first run downloads the model and tokenizer. It samples 64 tokens from a
-fixed prompt, prints the text and per-token times, then runs the checks below.
+fixed prompt, prints the story and a colored timing chart, then runs the checks
+below.
 The starter passes the text check and fails the timing check. That is expected
 until you implement KV caching.
 

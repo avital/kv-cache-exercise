@@ -46,7 +46,7 @@
              groups = self.heads // self.kv_heads
 --- a/main.py
 +++ b/main.py
-@@ -14,12 +14,15 @@
+@@ -17,12 +17,15 @@
      rng = torch.Generator(device=input_ids.device).manual_seed(seed)
      ids = input_ids.clone()
      prompt_length = ids.shape[1]
