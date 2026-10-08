@@ -1,8 +1,8 @@
 # KV cache exercise
 
 Add KV caching to a working CPU sampler. It uses SmolLM2-135M-Instruct weights
-with explicit attention in [model.py](model.py). The decoding loop is in
-[sample.py](sample.py).
+with explicit attention in [model.py](model.py). The sampler and its checks are in
+[main.py](main.py).
 
 ## Run
 
@@ -12,52 +12,40 @@ Python 3.10+. No GPU needed.
 python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install -r requirements.txt
-python sample.py "Write a short story about a robot learning to cook."
+python main.py
 ```
 
-The first sampling run downloads the model and tokenizer.
-Prints the generated text, then the time in milliseconds for each sampled token.
-Model loading and an initial warmup are excluded. CPU timings can fluctuate;
-look for the overall trend. The default run samples up to 128 tokens.
+The first run downloads the model and tokenizer. It samples 64 tokens from a
+fixed prompt, prints the text and per-token times, then runs the checks below.
+The starter passes the text check and fails the timing check. That is expected
+until you implement KV caching.
 
 ## Task
 
 **Write the code yourself, without AI assistance.** You can use AI to learn
 about KV caching, but do not use it to write the implementation.
 
-Edit `model.py` and `sample.py`:
+Edit `model.py` and the sampling loop in `main.py`:
 
 - Process the prompt once, then only the new token at each sampling step.
 - Implement the cache inside attention. Do not use Hugging Face's built-in cache.
 - Keep logits equivalent to a full forward on the same token history.
 
 Choose the cache representation, tensor layout, and internal API yourself.
-Keep the existing `sample(...)` entry point so the tests can call it.
+Keep the prompt, sampling settings, and checks in `main.py` unchanged.
 
-## Test
+## Checks
 
-Tests use a small model with fixed random weights on CPU. No model download.
+`python main.py` runs both checks using the same pretrained model as the sampler:
 
-```sh
-python -m pytest -q tests -k sampled_tokens  # Check the starter's output
-python -m pytest -q tests                   # Check your implementation
-```
+- **Text:** Sample 64 tokens at temperature 0.8 with seed 7, then decode them.
+  The text must exactly match the hardcoded reference string in `main.py`.
+- **Time per token:** Record 64 timings. Each time for tokens 2–64 must be
+  positive and less than token 1's time. Model loading and a two-token warmup
+  are excluded.
 
-The tests check:
-
-- **Sampled tokens:** Generate 32 tokens at temperature 0.8 for prompt lengths
-  3, 17, and 63, using seeds 7, 19, and 31 respectively. Each output must match
-  the corresponding hardcoded reference token IDs exactly.
-- **Time per token:** Use a 512-token prompt, warm up by sampling two tokens,
-  then sample 16 tokens with timing enabled. Require 16 output tokens and 16
-  timing entries. Every time for tokens 2–16 must be positive and less than
-  token 1's time. Each is compared with token 1.
-
-The starter passes the output checks and should fail the timing check.
-Nothing inside the cache is inspected.
-
-Timing can fluctuate on a busy CPU. Passing these tests checks the given examples,
-not every possible input.
+Nothing inside the cache is inspected. CPU timings can fluctuate on a busy
+machine. Passing checks this fixed example, not every possible input.
 
 ## Solution
 

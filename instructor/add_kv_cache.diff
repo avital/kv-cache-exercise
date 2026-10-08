@@ -44,15 +44,9 @@
  
              # Grouped-query attention: several query heads use each KV head.
              groups = self.heads // self.kv_heads
---- a/sample.py
-+++ b/sample.py
-@@ -1,4 +1,4 @@
--"""CPU sampling with a model whose forward has no cache API."""
-+"""CPU sampling with a model with our own per-layer K/V tensors."""
- 
- import sys
- from time import perf_counter
-@@ -15,12 +15,15 @@
+--- a/main.py
++++ b/main.py
+@@ -14,12 +14,15 @@
      rng = torch.Generator(device=input_ids.device).manual_seed(seed)
      ids = input_ids.clone()
      prompt_length = ids.shape[1]
@@ -68,4 +62,4 @@
 +        step_ids = token
          if timings is not None:
              timings.append(perf_counter() - started)
-         if eos_token_id is not None and token.item() == eos_token_id:
+     return ids[:, prompt_length:]
