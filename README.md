@@ -4,7 +4,7 @@ Add KV caching to a working CPU sampler. It uses SmolLM2-135M-Instruct weights
 with explicit attention in [model.py](model.py). The sampler and its checks are in
 [main.py](main.py).
 
-## Run
+## Setup
 
 Python 3.10+. No GPU needed.
 
@@ -12,14 +12,7 @@ Python 3.10+. No GPU needed.
 python3 -m venv .venv
 source .venv/bin/activate
 python -m pip install -r requirements.txt
-python main.py
 ```
-
-The first run downloads the model and tokenizer. It samples 64 tokens from a
-fixed prompt, prints the story and a colored timing chart, then runs the checks
-below.
-The starter passes the text check and fails the timing check. That is expected
-until you implement KV caching.
 
 ## Task
 
@@ -35,18 +28,25 @@ Edit `model.py` and the sampling loop in `main.py`:
 Choose the cache representation, tensor layout, and internal API yourself.
 Keep the prompt, sampling settings, and checks in `main.py` unchanged.
 
-## Checks
+## Tests
 
-`python main.py` runs both checks using the same pretrained model as the sampler:
+```sh
+python main.py
+```
 
-- **Text:** Sample 64 tokens at temperature 0.8 with seed 7, then decode them.
-  The text must exactly match the hardcoded reference string in `main.py`.
-- **Time per token:** Record 64 timings. Each time for tokens 2–64 must be
-  positive and less than token 1's time. Model loading and a two-token warmup
-  are excluded.
+This is both the demo and the test. It uses SmolLM2 on CPU; the first run
+downloads the model and tokenizer. It prints the story and per-token times,
+then checks:
 
-Nothing inside the cache is inspected. CPU timings can fluctuate on a busy
-machine. Passing checks this fixed example, not every possible input.
+- **Text:** Generate 64 tokens from the fixed prompt at temperature 0.8 with
+  seed 7. The decoded text must exactly match the hardcoded reference string.
+- **Timing:** Record 64 timings. Tokens 2–64 must each take a positive amount
+  of time and less time than token 1. Loading and a two-token warmup are excluded.
+
+The starter should pass the text check and fail timing. After adding caching,
+both should pass. A failed check exits with status 1.
+
+No cache internals are inspected. CPU timings can fluctuate on a busy machine.
 
 ## Solution
 
