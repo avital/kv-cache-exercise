@@ -16,6 +16,9 @@ python sample.py "Write a short story about a robot learning to cook."
 ```
 
 The first sampling run downloads the model and tokenizer.
+Prints the generated text, then the time in milliseconds for each sampled token.
+Model loading and an initial warmup are excluded. CPU timings can fluctuate;
+look for the overall trend. The default run samples up to 128 tokens.
 
 ## Task
 
