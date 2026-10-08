@@ -27,7 +27,6 @@ Edit `model.py` and `sample.py`:
 - Process the prompt once, then only the new token at each sampling step.
 - Implement the cache inside attention. Do not use Hugging Face's built-in cache.
 - Keep logits equivalent to a full forward on the same token history.
-- Handle repeated sampling requests without carrying over state.
 
 Choose the cache representation, tensor layout, and internal API yourself.
 Keep the existing `sample(...)` entry point so the tests can call it.
